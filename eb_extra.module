@@ -1,0 +1,129 @@
+<?php
+
+use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Field\WidgetBaseInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Form\OptGroup;
+
+/**
+ * Implements @see hook_field_widget_form_alter().
+ */
+function eb_extra_field_widget_form_alter(&$element, FormStateInterface $form_state, $context)
+{
+  /** @var WidgetBaseInterface $widget */
+  $widget = $context['widget'];
+  if ($widget->getPluginId() === 'entity_browser_entity_reference' || $widget->getPluginId() === 'entity_browser_entity_reference') {
+    $element['#type'] = 'container';
+    if (!empty($element['current'])) {
+      $element['current']['#prefix'] = "";
+      /*if (!empty($element['current']['items'])) {
+        foreach($element['current']['items'] as $key => &$item) {
+          $item['button'] = [
+            '#type' => 'details',
+            '#title' => t("Edit"),
+            '#attributes' => ['class' => ['eb-extra-button']],
+            'remove_button' => $item['remove_button'],
+            'replace_button' => $item['replace_button'],
+            'edit_button' => $item['edit_button']
+          ];
+          foreach(['remove_button', 'replace_button', 'edit_button'] as $button) {
+            if (!empty($item[$button])) {
+              $item['button'][$button] = $item[$button];
+              unset($item[$button]);
+            }
+          }
+
+        }
+      }*/
+    }
+    /** @var FieldItemListInterface $items */
+    $items = $context['items'];
+    $column = eb_extra_get_column($items);
+    $options = eb_extra_entity_options($items);
+    $element["{$column}_select"] = [
+      '#type' => 'select',
+      '#options' => $options,
+      '#default_value' => eb_extra_get_selected_options($items, $options),
+      '#multiple' => $items->getFieldDefinition()->getFieldStorageDefinition()->isMultiple(),
+      '#attributes' => ['class' => ['eb-extra-select'], 'data-entity-type-id' => $items->getFieldDefinition()->getSetting('target_type')],
+      '#weight' => -999
+    ];
+    $element['#attributes']['class'][] = 'eb-extra-wrapper';
+  }
+}
+
+/**
+ * @param $items
+ */
+function eb_extra_get_column(FieldItemListInterface $items)
+{
+  $fieldDefinition = $items->getFieldDefinition();
+  $property_names = $fieldDefinition->getFieldStorageDefinition()->getPropertyNames();
+  $column = $property_names[0];
+  return $column;
+}
+
+/**
+ * @param $items
+ */
+function eb_extra_entity_options(FieldItemListInterface $items) {
+  $fieldDefinition = $items->getFieldDefinition();
+  $column = eb_extra_get_column($items);
+  $options = $fieldDefinition
+    ->getFieldStorageDefinition()
+    ->getOptionsProvider($column, $items->getEntity())
+    ->getSettableOptions(\Drupal::currentUser());
+
+  // Add an empty option if the widget needs one.
+
+  $options = ['_none' => t("<-- None -->")] + $options;
+
+
+  $module_handler = \Drupal::moduleHandler();
+  $context = [
+    'fieldDefinition' => $fieldDefinition,
+    'entity' => $items->getEntity(),
+  ];
+  $module_handler->alter('options_list', $options, $context);
+
+  array_walk_recursive($options, ["\Drupal\Core\Field\FieldFilteredMarkup", 'create']);
+
+  $options = OptGroup::flattenOptions($options);
+  return $options;
+}
+
+function eb_extra_get_selected_options(FieldItemListInterface $items, $options) {
+  $column = eb_extra_get_column($items);
+  // We need to check against a flat list of options.
+  $flat_options = OptGroup::flattenOptions($options);
+
+  $selected_options = [];
+  foreach ($items as $item) {
+    $value = $item->{$column};
+    // Keep the value if it actually is in the list of options (needs to be
+    // checked against the flat list).
+    if (isset($flat_options[$value])) {
+      $selected_options[] = $value;
+    }
+  }
+
+  return $selected_options;
+}
+
+/**
+ * @see hook_page_attachments()
+ */
+function eb_extra_page_attachments(array &$attachments) {
+  $attachments['#attached']['library'][] = 'eb_extra/eb_extra_css';
+  $attachments['#attached']['library'][] = 'eb_extra/eb_extra_js';
+}
+
+/**
+ * @see hook_library_info_alter()
+ */
+function eb_extra_library_info_alter(&$libraries, $extension) {
+  if ($extension == 'entity_browser' && isset($libraries['view'])) {
+    unset($libraries['view']['js']);
+    $libraries['view']['dependencies'][] = 'eb_extra/eb_extra_view';
+  }
+}

@@ -1,0 +1,13 @@
+eb_extra_css:
+  css:
+    component:
+      css/eb_extra.css: {}
+eb_extra_js:
+  js:
+    js/eb_extra.js: {}
+  dependencies:
+    - core/drupalSettings
+    - core/underscore
+eb_extra_view:
+  js:
+    js/eb_extra.view.js: {}

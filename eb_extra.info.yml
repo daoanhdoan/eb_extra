@@ -1,0 +1,5 @@
+name: Entity Browser Extra
+type: module
+core_version_requirement: ^9
+dependentcies:
+  - drupal:entity_browser

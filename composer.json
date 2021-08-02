@@ -1,0 +1,9 @@
+{
+  "name": "daoanhdoan/eb_extra",
+  "description": "Entity Browser Extra",
+  "type": "drupal-custom-module",
+  "license":"GPL-2.0",
+  "extra": {
+    "installer-name": "eb_extra"
+  }
+}

@@ -1,0 +1,5 @@
+services:
+  eb_extra:
+    class: Drupal\eb_extra\EventSubscriber\EbExtraSubscriber
+    tags:
+      - {name: event_subscriber}

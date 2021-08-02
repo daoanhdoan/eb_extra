@@ -1,0 +1,10 @@
+<?php
+/**
+ * @file
+ */
+/**
+ * Implement hook_install()
+ */
+function eb_extra_install() {
+  module_set_weight('eb_extra', 99999);
+}
