@@ -63,25 +63,27 @@
   };
 })(jQuery, Drupal, drupalSettings);
 
-(function (drupalSettings) {
-  var pJQ = parent.jQuery.clone(), ifr = pJQ(parent.document).find('.entity-browser-modal-iframe');
-  if (ifr.length) {
-    var cls = pJQ(ifr).parents('.ui-dialog').eq(0).find('.ui-dialog-titlebar-close'),
-      btc = pJQ('<button>', {class: "ui-dialog-titlebar-close-eb-extra"}).html('Close');
-    pJQ(ifr).parents('.ui-dialog').eq(0).find('.ui-dialog-titlebar').prepend(btc);
+/*(function (drupalSettings) {
+  var ebmi = jQuery('.entity-browser-modal-iframe');
+  if (ebmi.length) {
+    var pJQ = parent.jQuery, ifr = pJQ(parent.document).find('.entity-browser-modal-iframe');
+    if (ifr.length) {
+      var cls = pJQ(ifr).parents('.ui-dialog').eq(0).find('.ui-dialog-titlebar-close'),
+        btc = pJQ('<button>', {class: "ui-dialog-titlebar-close-eb-extra"}).html('Close');
+      pJQ(ifr).parents('.ui-dialog').eq(0).find('.ui-dialog-titlebar').prepend(btc);
 
-    if (cls.length) {
-      pJQ(btc).click(function (event) {
-        var selected = ifr.contents().find('.entity-browser-use-selected');
-        if (selected.length) {
-          selected.click();
-        } else {
-          cls.click();
-        }
-        event.preventDefault();
-      });
+      if (cls.length) {
+        pJQ(btc).click(function (event) {
+          var selected = ifr.contents().find('.entity-browser-use-selected');
+          if (selected.length) {
+            selected.click();
+          } else {
+            cls.click();
+          }
+          event.preventDefault();
+        });
+      }
     }
   }
-
-}(drupalSettings));
+}(drupalSettings));*/
 
