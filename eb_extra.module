@@ -4,6 +4,7 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBaseInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\OptGroup;
+use Drupal\Core\Routing\CurrentRouteMatch;
 
 /**
  * Implements @see hook_field_widget_form_alter().
@@ -114,8 +115,39 @@ function eb_extra_get_selected_options(FieldItemListInterface $items, $options) 
  * @see hook_page_attachments()
  */
 function eb_extra_page_attachments(array &$attachments) {
-  $attachments['#attached']['library'][] = 'eb_extra/eb_extra_css';
+  /** @var CurrentRouteMatch $route */
+  $route = \Drupal::routeMatch();
+  $routeName = $route->getRouteName();
+
+  $displayManager = \Drupal::service('plugin.manager.entity_browser.display');
+  $browserStorage = Drupal::entityTypeManager()->getStorage('entity_browser');
+
+  $display_plugins = $displayManager->getDefinitions();
+  $ids = [];
+  $settings = ['entity_browser' => FALSE];
+  foreach ($display_plugins as $id => $definition) {
+    if (!empty($definition['uses_route'])) {
+      $ids[$id] = $id;
+    }
+  }
+
+  $ebs = $browserStorage->getQuery()
+    ->condition('status', TRUE)
+    ->condition("display", $ids, 'IN')
+    ->execute();
+  if ($ebs) {
+    foreach ($ebs as $id) {
+      /** @var $browser \Drupal\entity_browser\EntityBrowserInterface */
+      $browser = $browserStorage->load($id);
+      if ($routeName == 'entity_browser.' . $browser->id()) {
+        $settings['entity_browser'] = TRUE;
+        break;
+      }
+    }
+  }
+  $attachments['#attached']['drupalSettings']['eb_extra'] = $settings;
   $attachments['#attached']['library'][] = 'eb_extra/eb_extra_js';
+  $attachments['#attached']['library'][] = 'eb_extra/eb_extra_css';
 }
 
 /**

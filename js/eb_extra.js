@@ -63,27 +63,31 @@
   };
 })(jQuery, Drupal, drupalSettings);
 
-/*(function (drupalSettings) {
-  var ebmi = jQuery('.entity-browser-modal-iframe');
-  if (ebmi.length) {
-    var pJQ = parent.jQuery, ifr = pJQ(parent.document).find('.entity-browser-modal-iframe');
-    if (ifr.length) {
-      var cls = pJQ(ifr).parents('.ui-dialog').eq(0).find('.ui-dialog-titlebar-close'),
-        btc = pJQ('<button>', {class: "ui-dialog-titlebar-close-eb-extra"}).html('Close');
-      pJQ(ifr).parents('.ui-dialog').eq(0).find('.ui-dialog-titlebar').prepend(btc);
+(function (drupalSettings) {
+  if (drupalSettings.eb_extra.entity_browser) {
+    var pJQ = parent.jQuery, ebmi = pJQ('.entity-browser-modal-iframe');
+    if (ebmi.length) {
+      var ifr = pJQ(parent.document).find('.entity-browser-modal-iframe');
+      if (ifr.length) {
+        var cls = pJQ(ifr).parents('.ui-dialog').eq(0).find('.ui-dialog-titlebar-close'),
+          btc = pJQ('<button>', {class: "ui-dialog-titlebar-close ui-dialog-titlebar-close-eb-extra"}).html('<span class="icon-close">Close</span>');
+        pJQ(ifr).parents('.ui-dialog').eq(0).find('.ui-dialog-titlebar').prepend(btc);
 
-      if (cls.length) {
-        pJQ(btc).click(function (event) {
-          var selected = ifr.contents().find('.entity-browser-use-selected');
-          if (selected.length) {
-            selected.click();
-          } else {
-            cls.click();
-          }
-          event.preventDefault();
-        });
+        if (cls.length) {
+          pJQ(cls).addClass('visually-hidden');
+          pJQ(btc).click(function (event) {
+            var selected = ifr.contents().find('.entity-browser-use-selected');
+            if (selected.length) {
+              selected.click();
+            } else {
+              cls.click();
+            }
+            event.preventDefault();
+            pJQ = null;
+          });
+        }
       }
     }
   }
-}(drupalSettings));*/
+}(drupalSettings));
 

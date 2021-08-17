@@ -44,15 +44,26 @@ td.views-field.views-field-entity-browser-select {
 }
 
 .ui-dialog-titlebar-close-eb-extra {
-  background: url("../images/ex.svg") center no-repeat !important;
-  position: absolute;
-  right: .3em;
-  top: 50%;
-  margin: -10px 0 0 0;
-  padding: 1px;
-  width: 20px;
-  height: 20px;
   z-index: 99999;
   overflow: hidden;
   color: transparent;
+}
+.ui-dialog-titlebar-close-eb-extra .icon-close {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  margin: 0;
+  display: block;
+  -webkit-transform: none;
+  transform: none;
+  background: #fff;
+  -webkit-mask-image: url("data:image/svg+xml,%3csvg xmlns= 'http://www.w3.org/2000/svg' viewBox= '0 0 24 24' %3e%3cpath fill= 'none' d= 'M20 4L4 20M4 4l16 16' stroke= 'black' stroke-width= '2' stroke-linecap= 'round' stroke-linejoin= 'round' /%3e%3c/svg%3e");
+  mask-image: url("data:image/svg+xml,%3csvg xmlns= 'http://www.w3.org/2000/svg' viewBox= '0 0 24 24' %3e%3cpath fill= 'none' d= 'M20 4L4 20M4 4l16 16' stroke= 'black' stroke-width= '2' stroke-linecap= 'round' stroke-linejoin= 'round' /%3e%3c/svg%3e");
+  -webkit-mask-size: 24px 24px;
+  mask-size: 24px 24px;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center center;
+  mask-position: center center;
 }
